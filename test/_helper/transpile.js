@@ -8,11 +8,13 @@ exports.transpile = function (src) {
       module: 'ESNext',
       moduleResolution: 'node',
       allowSyntheticDefaultImports: true,
-      verbatimModuleSyntax: true,
       jsx: 'preserve',
       resolveJsonModule: true,
       plugins: [
-        {transform: path.join(__dirname, "../../dist/index.js")},
+        {
+          transform: path.join(__dirname, "../../dist/index.js"),
+          transformProgram: true
+        },
       ],
     },
     fileName: 'mock.ts',
