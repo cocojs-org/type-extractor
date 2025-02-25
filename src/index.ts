@@ -2,7 +2,6 @@ import ts, {
   SyntaxKind,
   Program,
   CompilerHost,
-  PluginConfig,
   CompilerOptions,
   SourceFile,
   TransformationContext,
@@ -43,121 +42,6 @@ function register(kind: ts.SyntaxKind, decoratorName: string, transformer: Funct
   register(kind, name, transformer);
 })
 
-function transformer(program: Program) {
-  return function (context: TransformationContext) {
-    return function (sourceFile: SourceFile) {
-      function visit(node: Node): Node {
-        if (ts.isClassDeclaration(node)) {
-          const decorators = (node.modifiers || []).map(modifier => {
-            // 检查是否是装饰器
-            if (ts.isDecorator(modifier)) {
-              const decoratorExpression = modifier.expression;
-              let find;
-              // 检查是否是装饰器调用（如 @a()）
-              if (ts.isCallExpression(decoratorExpression) &&
-                decoratorExpression.arguments.length === 0 &&
-                ts.isIdentifier(decoratorExpression.expression) &&
-                (find = classTransformList.find(i => i.decoratorName === decoratorExpression.expression.getText(sourceFile)))
-              ) {
-                const args = find.transformer(modifier, node, sourceFile);
-                return ts.factory.updateDecorator(
-                  modifier,
-                  ts.factory.updateCallExpression(
-                    decoratorExpression,
-                    decoratorExpression.expression,
-                    undefined,
-                    args
-                  )
-                )
-              }
-            }
-            return modifier;
-          });
-          return ts.factory.updateClassDeclaration(
-            node,
-            decorators,
-            node.name,
-            node.typeParameters,
-            node.heritageClauses,
-            ts.visitNodes(node.members, visit) as unknown as ts.ClassElement[]
-          );
-        } else if (ts.isPropertyDeclaration(node)) {
-          const decorators = (node.modifiers || []).map((modifier: ts.Decorator) => {
-            if (ts.isDecorator(modifier)) {
-              const decoratorExpression = modifier.expression;
-              // 检查是否是装饰器调用（如 @a()）
-              let find;
-              if (ts.isCallExpression(decoratorExpression) &&
-                ts.isIdentifier(decoratorExpression.expression) &&
-                (find = propertyTransformList.find(i => i.decoratorName === decoratorExpression.expression.getText(sourceFile)))
-              ) {
-                // 获取新入参
-                const args = find.transformer(modifier, node, sourceFile);
-                return ts.factory.updateDecorator(
-                  modifier,
-                  ts.factory.updateCallExpression(
-                    decoratorExpression,
-                    decoratorExpression.expression,
-                    undefined,
-                    args
-                  )
-                );
-              }
-            }
-            return modifier;
-          });
-          return ts.factory.updatePropertyDeclaration(
-            node,
-            decorators,
-            node.name,
-            node.questionToken,
-            node.type,
-            node.initializer
-          );
-        } else if (ts.isMethodDeclaration(node)) {
-          const decorators = (node.modifiers || []).map((modifier: ts.Decorator) => {
-            if (ts.isDecorator(modifier)) {
-              const decoratorExpression = modifier.expression;
-              // 检查是否是装饰器调用（如 @a()）
-              let find;
-              if (ts.isCallExpression(decoratorExpression) &&
-                ts.isIdentifier(decoratorExpression.expression) &&
-                (find = methodTransformList.find(i => i.decoratorName === decoratorExpression.expression.getText(sourceFile)))
-              ) {
-                // 获取新入参
-                const args = find.transformer(modifier, node, sourceFile);
-                return ts.factory.updateDecorator(
-                  modifier,
-                  ts.factory.updateCallExpression(
-                    decoratorExpression,
-                    decoratorExpression.expression,
-                    undefined,
-                    args
-                  )
-                );
-              }
-            }
-            return modifier;
-          });
-          return ts.factory.updateMethodDeclaration(
-            node,
-            decorators,
-            node.asteriskToken,
-            node.name,
-            node.questionToken,
-            node.typeParameters,
-            node.parameters,
-            node.type,
-            node.body
-          );
-        } else {
-          return ts.visitEachChild(node, visit, context);
-        }
-      }
-      return ts.visitNode(sourceFile, visit);
-    };
-  };
-}
 
 function transformAst(this: typeof ts, context: TransformationContext) {
   const tsInstance = this;
@@ -305,7 +189,7 @@ function getPatchedHost(
 function transformProgram(
   program: Program,
   host: CompilerHost | undefined,
-  config: PluginConfig,
+  config: any,
   { ts: tsInstance }: ProgramTransformerExtras,
 ): Program {
   const compilerOptions = program.getCompilerOptions();
