@@ -51,7 +51,7 @@ function transformAst(this: typeof ts, context: TransformationContext) {
     return tsInstance.visitEachChild(sourceFile, visit, context);
 
     /* Visitor Function */
-    function visit(node: Node): Node {
+    function visit(node: ts.Node): ts.Node {
       if (ts.isClassDeclaration(node)) {
         const decorators = (node.modifiers || []).map(modifier => {
           // 检查是否是装饰器

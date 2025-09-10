@@ -13,6 +13,17 @@ class A {
     expect(output).toContain(decoratorExp);
   });
 
+  test('构造函数参数类型是自己的情况', async () => {
+    const source = `
+@constructorParam()
+class A {
+  constructor(service: A) {}
+}`;
+    const decoratorExp = '@constructorParam([A])';
+
+    const output = transpile(source);
+    expect(output).toContain(decoratorExp);
+  });
 
   xtest('return new 表达式', async () => {
     const source = `
