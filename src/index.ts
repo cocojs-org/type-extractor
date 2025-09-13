@@ -43,8 +43,8 @@ function register(kind: ts.SyntaxKind, decoratorName: string, transformer: Funct
 })
 
 
-function transformAst(this: typeof ts, context: TransformationContext) {
-  const tsInstance = this;
+function transformAst(tsInstance: typeof ts, context: TransformationContext, program?: Program) {
+  const checker = program?.getTypeChecker();
 
   /* Transformer Function */
   return (sourceFile: SourceFile) => {
@@ -64,7 +64,7 @@ function transformAst(this: typeof ts, context: TransformationContext) {
               ts.isIdentifier(decoratorExpression.expression) &&
               (find = classTransformList.find(i => i.decoratorName === decoratorExpression.expression.getText(sourceFile)))
             ) {
-              const args = find.transformer(modifier, node, sourceFile);
+              const args = find.transformer(modifier, node, sourceFile, checker);
               return ts.factory.updateDecorator(
                 modifier,
                 ts.factory.updateCallExpression(
@@ -97,7 +97,7 @@ function transformAst(this: typeof ts, context: TransformationContext) {
               (find = propertyTransformList.find(i => i.decoratorName === decoratorExpression.expression.getText(sourceFile)))
             ) {
               // 获取新入参
-              const args = find.transformer(modifier, node, sourceFile);
+              const args = find.transformer(modifier, node, sourceFile, checker);
               return ts.factory.updateDecorator(
                 modifier,
                 ts.factory.updateCallExpression(
@@ -130,7 +130,7 @@ function transformAst(this: typeof ts, context: TransformationContext) {
               (find = methodTransformList.find(i => i.decoratorName === decoratorExpression.expression.getText(sourceFile)))
             ) {
               // 获取新入参
-              const args = find.transformer(modifier, node, sourceFile);
+              const args = find.transformer(modifier, node, sourceFile, checker);
               return ts.factory.updateDecorator(
                 modifier,
                 ts.factory.updateCallExpression(
@@ -200,7 +200,7 @@ function transformProgram(
   /* Transform AST */
   const transformedSource = tsInstance.transform(
     /* sourceFiles */ program.getSourceFiles().filter(sourceFile => rootFileNames.includes(sourceFile.fileName)),
-    /* transformers */ [ transformAst.bind(tsInstance) ],
+    /* transformers */ [ (context: TransformationContext) => transformAst(tsInstance, context, program) ],
     compilerOptions
   ).transformed;
 

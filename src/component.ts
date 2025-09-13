@@ -1,6 +1,6 @@
 import ts, {SyntaxKind} from "typescript";
 
-function transformer(modifier: ts.Decorator, node: ts.MethodDeclaration, sourceFile: ts.SourceFile): ts.Expression[] {
+function transformer(modifier: ts.Decorator, node: ts.MethodDeclaration, sourceFile: ts.SourceFile, checker?: any): ts.Expression[] {
     const decoratorExpression = modifier.expression as ts.CallExpression;
     const scopeArg = decoratorExpression.arguments?.[0];
     // 获取属性的类型

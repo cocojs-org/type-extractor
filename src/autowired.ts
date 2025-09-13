@@ -1,6 +1,6 @@
 import ts, {Expression, SyntaxKind} from "typescript";
 
-function transformer(modifier: ts.Decorator, node: ts.PropertyDeclaration, sourceFile: ts.SourceFile): ts.Expression[] {
+function transformer(modifier: ts.Decorator, node: ts.PropertyDeclaration, sourceFile: ts.SourceFile, checker?: any): ts.Expression[] {
     let type;
     if (
       node.type &&
