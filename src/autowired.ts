@@ -51,6 +51,5 @@ function transformer(modifier: ts.Decorator, node: ts.PropertyDeclaration, sourc
 }
 
 export const config = [
-  { kind: SyntaxKind.PropertyDeclaration, name: 'autowired', transformer },
-  { kind: SyntaxKind.PropertyDeclaration, name: 'reactiveAutowired', transformer },
+  { kind: SyntaxKind.PropertyDeclaration, name: 'autowired', transformer }
 ];
