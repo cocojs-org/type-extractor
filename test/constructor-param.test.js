@@ -1,6 +1,6 @@
 const { transpile } = require('./_helper/transpile');
 
-describe('@constructorParam', () => {
+describe('constructorParam装饰器', () => {
   test('如果是类，将类作为参数', async () => {
     const source = `
 class Service {}
@@ -22,6 +22,30 @@ class A {
   constructor(service: A) {}
 }`;
     const decoratorExp = '@constructorParam([A])';
+
+    const output = transpile(source);
+    expect(output).toContain(decoratorExp);
+  });
+
+  test('如果传入类型，那么解析成undefined', async () => {
+    const source = `
+@constructorParam()
+class A {
+  constructor(service) {}
+}`;
+    const decoratorExp = '@constructorParam([undefined])';
+
+    const output = transpile(source);
+    expect(output).toContain(decoratorExp);
+  });
+
+  test('没有参数，那么解析成空数组', async () => {
+    const source = `
+@constructorParam()
+class A {
+  constructor() {}
+}`;
+    const decoratorExp = '@constructorParam([])';
 
     const output = transpile(source);
     expect(output).toContain(decoratorExp);
@@ -76,6 +100,18 @@ class A {
   constructor(service: true, service1: Bool, service2: boolean, service3: Boolean) {}
 }`;
     const decoratorExp = '@constructorParam([undefined, undefined, undefined, undefined])';
+
+    const output = transpile(source);
+    expect(output).toContain(decoratorExp);
+  });
+
+  test('参数类型是null、undefined', async () => {
+    const source = `
+@constructorParam()
+class A {
+  constructor(service: null, service1: undefined) {}
+}`;
+    const decoratorExp = '@constructorParam([undefined, undefined])';
 
     const output = transpile(source);
     expect(output).toContain(decoratorExp);
