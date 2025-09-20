@@ -51,13 +51,13 @@ class A {
     expect(output).toContain(decoratorExp);
   });
 
-  test('如果类型没有定义，那么解析成undefined', async () => {
+  test('遇到驼峰的标识符，如果没有明确是变量名、内部类、包装类，也可以正常解析', async () => {
     const source = `
 @constructorParam()
 class A {
   constructor(service: Service) {}
 }`;
-    const decoratorExp = '@constructorParam([undefined])';
+    const decoratorExp = '@constructorParam([Service])';
 
     const output = transpile(source);
     expect(output).toContain(decoratorExp);
