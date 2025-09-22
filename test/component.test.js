@@ -12,43 +12,7 @@ describe('component装饰器', () => {
       return s;
     }
   }`;
-      const decoratorExp = '@component({ value: Service })';
-  
-      const output = transpile(source);
-      expect(output).toContain(decoratorExp);
-    });
-  
-    test('设置了Scope', async () => {
-      const source = `
-  function autowired() {}
-  class Service {}
-  class A {
-    @component(Component.Scope.Singleton)
-    hello(): Service {
-      const s = new Service();
-      return s;
-    }
-  }
-  `;
-      const decoratorExp = '@component({ value: Service, scope: Component.Scope.Singleton })';
-  
-      const output = transpile(source);
-      expect(output).toContain(decoratorExp);
-    });
-
-    test('设置了prototype', async () => {
-      const source = `
-  function autowired() {}
-  class Service {}
-  class A {
-    @component(Component.Scope.Prototype)
-    hello(): Service {
-      const s = new Service();
-      return s;
-    }
-  }
-  `;
-      const decoratorExp = '@component({ value: Service, scope: Component.Scope.Prototype })';
+      const decoratorExp = '@component(Service)';
   
       const output = transpile(source);
       expect(output).toContain(decoratorExp);

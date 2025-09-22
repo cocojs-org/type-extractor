@@ -1,8 +1,6 @@
 import ts, {SyntaxKind, TypeChecker} from "typescript";
 
 function transformer(modifier: ts.Decorator, node: ts.MethodDeclaration, sourceFile: ts.SourceFile, checker?: TypeChecker): ts.Expression[] {
-    const decoratorExpression = modifier.expression as ts.CallExpression;
-    const scopeArg = decoratorExpression.arguments?.[0];
     
     // 从方法的返回类型获取类型信息
     let typeIdentifier: ts.Identifier | undefined;
@@ -35,13 +33,7 @@ function transformer(modifier: ts.Decorator, node: ts.MethodDeclaration, sourceF
     }
     
     // 创建参数数组
-    let argumentsArray = [];
-    if (typeIdentifier || scopeArg) {
-        const propType = typeIdentifier ? [ts.factory.createPropertyAssignment('value', typeIdentifier)] : [];
-        const propScope = scopeArg ? [ts.factory.createPropertyAssignment('scope', scopeArg)] : [];
-        argumentsArray = [ts.factory.createObjectLiteralExpression([...propType, ...propScope])];
-    }
-    
+    const argumentsArray = typeIdentifier ? [typeIdentifier] : [];
     return argumentsArray;
 }
 
