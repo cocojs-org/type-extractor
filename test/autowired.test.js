@@ -1,6 +1,18 @@
 const { transpile } = require('./_helper/transpile');
 
 describe('autowired装饰器', () => {
+  test('复合大驼峰命名规范的标识符则设置成装饰器参数', async () => {
+    const source = `
+class A {
+  @autowired()
+  service: Service;
+}`;
+    const decoratorExp = '@autowired(Service)';
+
+    const output = transpile(source);
+    expect(output).toContain(decoratorExp);
+  });
+
   test('标识符是类，则设置成装饰器参数', async () => {
     const source = `
 class Service {}
