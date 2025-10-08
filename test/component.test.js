@@ -17,6 +17,22 @@ describe('component装饰器', () => {
       const output = transpile(source);
       expect(output).toContain(decoratorExp);
     });
+
+    test('返回的类型没有定义，但是复合大驼峰的命名规则，也可以正常解析', async () => {
+      const source = `
+  class A {
+    @component()
+    hello(): Service {
+      const s = new Service();
+      return s;
+    }
+  }`;
+      const decoratorExp = '@component(Service)';
+  
+      const output = transpile(source);
+      expect(output).toContain(decoratorExp);
+    });
+
   })
 
   describe('无法解析的情况', () => {
@@ -29,20 +45,6 @@ describe('component装饰器', () => {
         }
       }`;
       const decoratorExp = '@component()';
-      const output = transpile(source);
-      expect(output).toContain(decoratorExp);
-    });
-
-    test('返回类型没有定义的情况', async () => {
-      const source = `
-      class A {
-        @component()
-        hello(): Service {
-          return new Service();
-        }
-      }`;
-      const decoratorExp = '@component()';
-  
       const output = transpile(source);
       expect(output).toContain(decoratorExp);
     });
