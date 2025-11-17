@@ -1,7 +1,7 @@
 {
   "name": "@cocojs/type-extractor",
   "version": "0.0.16",
-  "description": "A TypeScript transformer that extracts type indentifier from decorator-decorated classes, methods, and properties at compile time.",
+  "description": "A TypeScript transformer that extracts type identifier from decorator-decorated classes, methods, and properties at compile time.",
   "main": "dist/index.js",
   "files": [
     "dist"
