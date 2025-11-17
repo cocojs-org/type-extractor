@@ -1,0 +1,28 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "build",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}", // 项目根目录
+            "runtimeExecutable": "pnpm", // 包管理器（npm/yarn/pnpm）
+            "runtimeArgs": ["run", "build"], // 执行的脚本名
+            "console": "integratedTerminal", // 在集成终端输出日志
+            "skipFiles": ["<node_internals>/**"]
+        },
+        {
+            "name": "jest",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}", // 项目根目录
+            "runtimeExecutable": "pnpm", // 包管理器（npm/yarn/pnpm）
+            "runtimeArgs": ["run", "jest"], // 执行的脚本名
+            "console": "integratedTerminal", // 在集成终端输出日志
+            "skipFiles": ["<node_internals>/**"]
+        }
+    ]
+}
